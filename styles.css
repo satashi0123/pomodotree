@@ -68,12 +68,13 @@ h3 {
 .header__desc {
   font-size: 1.6rem;
   color: var(--color-gray-dark);
+  text-align: center;
 }
 
 .container {
   border-radius: 1.2rem;
   margin: 2rem auto;
-  max-width: 80rem;
+  max-width: 120rem;
   padding: 3rem;
   padding-bottom: 1rem;
   display: grid;
