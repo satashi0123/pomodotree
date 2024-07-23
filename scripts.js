@@ -2,62 +2,79 @@ const form = document.querySelector(".form");
 const minPerSet = document.querySelector(".min-per-set");
 const sound = document.querySelector(".sound-type");
 const numSet = document.querySelector(".num-of-set");
-const timerCounter = document.querySelector(".timer__counter");
-const image = document.querySelector(".image-tree__img");
-const audioPlay = document.querySelector(".audio");
-const message = document.querySelector(".message__text");
+const restTime = document.querySelector(".rest-time");
 const startBtn = document.querySelector(".form__button");
 
-let counter60sec;
-let level = 0;
+const image = document.querySelector(".tree-map__img");
+const plantedMsg = document.querySelector(".tree-map__planted");
+const audioPlay = document.querySelector(".audio");
+const message = document.querySelector(".message__text");
+const timerCounter = document.querySelector(".timer__counter");
 
+let countDown;
+let restCountdown;
+let plantedTree = 0;
+
+// For testing purpose
+const testSec = 5;
+
+// Init message
 setMessage("Start your Poromodo & plane tree above!");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
+  // Clear the lastest dountdown on run
+  clearInterval(countDown);
+  // Run new counter
   counter();
 });
 
 function counter() {
-  const track = sound.value;
-  const min = minPerSet.value;
-  const set = numSet.value;
+  // Record all the input value
+  const setTrack = sound.value;
+  const setMin = minPerSet.value;
+  const setSet = numSet.value;
 
-  // Reset input value
+  // Reset all input field
   minPerSet.value = numSet.value = "";
 
-  let countMin = min - 1;
-  let countSec = 5;
+  let countMin = setMin - 1;
+  let countSec = testSec;
   let countSet = 1;
 
   //Render init set value
-  setMessage(`You are in set ${countSet}/${set}`);
+  setMessage(`You are in set ${countSet}/${setSet} (${setMin} min/set)`);
 
   //Render and play track
-  playTrack(track);
+  playTrack(setTrack);
 
-  counter60sec = setInterval(() => {
+  countDown = setInterval(() => {
     renderTimer(countMin, countSec);
     countSec = countSec - 1;
+    // Check for finish 1 min & reset countMin
     if (countSec < 0) {
-      countSec = 5;
+      countSec = testSec;
       countMin = countMin - 1;
+      //Check for Finish 1 set
       if (countMin < 0) {
         countSet++;
-        if (countSet > set) {
+
+        //Update planted tree
+        plantedTree++;
+        renderPlantedTree(plantedTree);
+
+        // Check for finished all
+        if (countSet > setSet) {
           //Finish sets
-          clearInterval(counter60sec);
+          clearInterval(countDown);
           setMessage(`You finish all sets !`);
 
-          //Update user level
-          level++;
-          setImageLevel(level);
-
           endSetSound();
-          //Reset counter for next set
+
+          //Reset dountdown counter for next set
         } else {
-          setMessage(`You are in set ${countSet}/${set}`);
-          countMin = min - 1;
+          setMessage(`You are in set ${countSet}/${setSet}`);
+          countMin = setMin - 1;
         }
       }
     }
@@ -82,6 +99,14 @@ function playTrack(track) {
           controls
           src="./audio/Morning Walks  Chiara Arpressio.mp3"
         ></audio>`;
+  else if (track === "baroque")
+    audioPlay.innerHTML = `<audio 
+  loop
+  autoplay
+  controls
+  src="./audio/Canon in D Pachelbels Canon.mp3"
+></audio>`;
+  else return;
 }
 
 function endSetSound() {
@@ -91,6 +116,8 @@ function endSetSound() {
         ></audio>`;
 }
 
-function setImageLevel(level) {
-  image.setAttribute("src", `./img/${level}.png`);
+// Change map image with level up per finished set
+function renderPlantedTree(plantedNum) {
+  image.setAttribute("src", `./img/${plantedNum}.png`);
+  plantedMsg.textContent = `You planted ${plantedTree} trees 🌲`;
 }

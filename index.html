@@ -23,8 +23,7 @@
         </p>
       </header>
 
-      <!-- <main class="content"> -->
-      <form action="submit" class="form">
+      <form action="" class="form">
         <div class="form__time">
           <label for="min-per-set">Min per set</label>
           <input
@@ -39,7 +38,6 @@
           <label for="sound-type">Sound type</label>
           <select name="sound type" id="sound-type" class="sound-type">
             <option value="">Select your sound...</option>
-            <option value="white Sound">White sound</option>
             <option value="baroque">Baroque</option>
             <option value="piano">Piano relaxing</option>
           </select>
@@ -55,16 +53,25 @@
           />
         </div>
 
+        <div class="form__rest">
+          <label for="rest-time">Rest per set</label>
+          <select name="test time" id="rest-time" class="rest-time">
+            <option value="5">5 min</option>
+            <option value="10">10 min</option>
+            <option value="15">15 min</option>
+          </select>
+        </div>
+
         <button class="form__button">Start</button>
       </form>
-      <div class="img-tree">
+      <div class="tree-map">
         <img
           src="./img/0.png"
           alt="trees you grow in poromodo"
-          class="image-tree__img"
+          class="tree-map__img"
         />
+        <p class="tree-map__planted">🌲 Let's start build our forest 🌲</p>
       </div>
-      <!-- </main> -->
 
       <div class="message">
         <p class="message__text"></p>
