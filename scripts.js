@@ -23,7 +23,7 @@ let restCountdown;
 
 // For faster min count testing purpose
 // let secsPerMin = 5;
-let secsPerMin = 60;
+let secsPerMin = 59;
 
 // Init message
 setMessage("Start your Poromodo & plane tree above!");
