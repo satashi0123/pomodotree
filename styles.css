@@ -52,6 +52,12 @@ html {
   }
 }
 
+@media only screen and (max-width: 25em) {
+  html {
+    font-size: 37.5%;
+  }
+}
+
 body {
   font-family: "Rubik", sans-serif;
   background-color: rgba(0, 0, 0, 0.1);
@@ -149,6 +155,15 @@ h3 {
   height: 2rem;
   width: 80%;
   font-size: 1.2rem;
+}
+
+@media only screen and (max-width: 25em) {
+  .form__time input,
+  .form__sound select,
+  .form__set input,
+  .form__rest select {
+    height: 3rem;
+  }
 }
 
 .form__sound {
