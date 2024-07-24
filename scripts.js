@@ -41,7 +41,9 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
   // Clear the lastest dountdown on run
   clearInterval(countDown);
-  // Run new counter
+  clearInterval(restCountdown);
+
+  // Run new counter loop
   counter();
 });
 
@@ -67,24 +69,10 @@ function counter() {
         countSet++;
 
         //Update planted tree
-        plantedTree++;
+        plantedTree >= 16 ? (plantedTree = 16) : plantedTree++;
         renderPlantedTree(plantedTree);
         clearInterval(countDown);
         restTimeCounter(setRest);
-
-        // Check for finished all
-        // if (countSet > setSet) {
-        //   //Finish sets
-        //   clearInterval(countDown);
-        //   setMessage(`You finish all sets !`);
-
-        //   endSetSound();
-
-        //   //Reset dountdown counter for next set
-        // } else {
-        //   setMessage(`You are in set ${countSet}/${setSet}`);
-        //   countMin = setMin - 1;
-        // }
       } else {
         countMin = setMin - 1;
       }
@@ -138,21 +126,36 @@ function setMessage(msg) {
 }
 
 function playTrack(track) {
-  if (track === "piano")
-    audioPlay.innerHTML = `<audio 
+  if (!track) return;
+  let source =
+    track === "piano"
+      ? "Morning Walks  Chiara Arpressio"
+      : track === "baroque"
+      ? "Canon in D Pachelbels Canon"
+      : "";
+
+  audioPlay.innerHTML = `<audio 
           loop
           autoplay
           controls
-          src="./audio/Morning Walks  Chiara Arpressio.mp3"
+          src="./audio/${source}.mp3"
         ></audio>`;
-  else if (track === "baroque")
-    audioPlay.innerHTML = `<audio 
-  loop
-  autoplay
-  controls
-  src="./audio/Canon in D Pachelbels Canon.mp3"
-></audio>`;
-  else return;
+
+  //   if (track === "piano")
+  //     audioPlay.innerHTML = `<audio
+  //           loop
+  //           autoplay
+  //           controls
+  //           src="./audio/Morning Walks  Chiara Arpressio.mp3"
+  //         ></audio>`;
+  //   else if (track === "baroque")
+  //     audioPlay.innerHTML = `<audio
+  //   loop
+  //   autoplay
+  //   controls
+  //   src="./audio/Canon in D Pachelbels Canon.mp3"
+  // ></audio>`;
+  //   else return;
 }
 
 function endSetSound() {
@@ -164,6 +167,10 @@ function endSetSound() {
 
 // Change map image with level up per finished set
 function renderPlantedTree(plantedNum) {
-  image.setAttribute("src", `./img/${plantedNum}.png`);
-  plantedMsg.textContent = `You planted ${plantedTree} trees 🌲`;
+  if (plantedNum === 16)
+    plantedMsg.textContent = `Congratulation! You planted all trees 🌲`;
+  else {
+    image.setAttribute("src", `./img/${plantedNum}.png`);
+    plantedMsg.textContent = `You planted ${plantedTree} trees 🌲`;
+  }
 }
