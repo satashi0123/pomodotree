@@ -17,7 +17,7 @@
   <body>
     <div class="container">
       <header class="header">
-        <h1>PoromoTree</h1>
+        <h1>PomodoTree</h1>
         <p class="header__desc">
           Work with Performance & Have fun plan a tree per set!
         </p>
@@ -25,7 +25,7 @@
 
       <form action="" class="form">
         <div class="form__time">
-          <label for="min-per-set">Min per set</label>
+          <label for="min-per-set">Pomodoro Duration</label>
           <input
             type="text"
             id="min-per-set"
@@ -43,7 +43,7 @@
           </select>
         </div>
         <div class="form__set">
-          <label for="num-of-set">Num of set</label>
+          <label for="num-of-set">Pomodoro sets</label>
           <input
             type="text"
             id="num-of-set"
@@ -54,7 +54,7 @@
         </div>
 
         <div class="form__rest">
-          <label for="rest-time">Rest per set</label>
+          <label for="rest-time">Short Break Duration</label>
           <select name="test time" id="rest-time" class="rest-time">
             <option value="5">5 min</option>
             <option value="10">10 min</option>
@@ -78,14 +78,19 @@
       </div>
 
       <figure class="audio"></figure>
+      <figure class="notification-sound"></figure>
 
       <div class="timer">
-        <p class="timer__rest">00:00</p>
-        <p class="timer__counter">00:00</p>
+        <div class="timer__rest-container">
+          <p class="timer__rest">00:00</p>
+        </div>
+        <div class="timer__counter-container">
+          <p class="timer__counter">00:00</p>
+        </div>
       </div>
 
       <footer class="footer">
-        <h3>PoromoTree</h3>
+        <h3>PomodoTree</h3>
         <p class="footer__desc">By PA with <span>❤</span></p>
         <div class="footer__social">
           <svg

@@ -7,20 +7,23 @@ const startBtn = document.querySelector(".form__button");
 
 const image = document.querySelector(".tree-map__img");
 const plantedMsg = document.querySelector(".tree-map__planted");
-const audioPlay = document.querySelector(".audio");
+const audioPlayer = document.querySelector(".audio");
+const notificationSound = document.querySelector(".notification-sound");
 const message = document.querySelector(".message__text");
 const timerCounter = document.querySelector(".timer__counter");
 const timerRest = document.querySelector(".timer__rest");
 
-let countDown;
-let restCountdown;
-let plantedTree = 0;
-
 // Variabel for global tracking
 let setTrack, setMin, setSet, setRest, countSet;
+let plantedTree = 0;
 
-// For testing purpose
-const testSec = 5;
+// countdown interval variable
+let countDown;
+let restCountdown;
+
+// For faster min count testing purpose
+// let secsPerMin = 5;
+let secsPerMin = 60;
 
 // Init message
 setMessage("Start your Poromodo & plane tree above!");
@@ -43,35 +46,39 @@ form.addEventListener("submit", (e) => {
   clearInterval(countDown);
   clearInterval(restCountdown);
 
+  //Render and play track
+  playSoundTrack(setTrack);
+
   // Run new counter loop
   counter();
 });
 
 function counter() {
   let countMin = setMin - 1;
-  let countSec = testSec;
+  let countSec = secsPerMin;
 
   //Render init set value
   setMessage(`You are in set ${countSet}/${setSet} (${setMin} min/set)`);
-
-  //Render and play track
-  playTrack(setTrack);
 
   countDown = setInterval(() => {
     renderTimer(countMin, countSec);
     countSec = countSec - 1;
     // Check for finish 1 min & reset countMin
     if (countSec < 0) {
-      countSec = testSec;
+      countSec = secsPerMin;
       countMin = countMin - 1;
+
       //Check for Finish 1 set
       if (countMin < 0) {
         countSet++;
 
         //Update planted tree
-        plantedTree >= 16 ? (plantedTree = 16) : plantedTree++;
+        plantedTree++;
+        if (plantedTree > 16) plantedTree = 16;
+
         renderPlantedTree(plantedTree);
         clearInterval(countDown);
+        playNotificationSound("endOneSet");
         restTimeCounter(setRest);
       } else {
         countMin = setMin - 1;
@@ -81,33 +88,34 @@ function counter() {
 }
 
 function restTimeCounter(value) {
-  const sm = value;
-  const ss = 5;
+  const setRestMin = value;
 
-  let cs = 5;
-  let cm = sm - 1;
+  let countRestSec = secsPerMin;
+  let countRestMin = setRestMin - 1;
 
+  // Check all sets finished
   if (countSet > setSet) {
-    //Finish sets
-
     setMessage(`You finish all sets !`);
-    endSetSound();
+    playNotificationSound("endSets");
 
-    //Reset dountdown counter for next set
+    //Reset countdown counter for next set
   } else {
     timerRest.classList.add("timer__rest--active");
     setMessage(`Rest Time!`);
     restCountdown = setInterval(() => {
-      timerRest.textContent = `${cm < 10 ? `0${cm}` : cm}:${
-        cs < 10 ? `0${cs}` : cs
-      }`;
-      cs = cs - 1;
-      if (cs < 0) {
-        cs = ss;
-        cm = cm - 1;
-        if (cm < 0) {
+      timerRest.textContent = `${
+        countRestMin < 10 ? `0${countRestMin}` : countRestMin
+      }:${countRestSec < 10 ? `0${countRestSec}` : countRestSec}`;
+      countRestSec = countRestSec - 1;
+      if (countRestSec < 0) {
+        countRestSec = secsPerMin;
+        countRestMin = countRestMin - 1;
+
+        // Check rest counter finished
+        if (countRestMin < 0) {
           clearInterval(restCountdown);
           timerRest.classList.remove("timer__rest--active");
+          playNotificationSound("endRest");
           counter();
         }
       }
@@ -125,8 +133,9 @@ function setMessage(msg) {
   message.textContent = msg;
 }
 
-function playTrack(track) {
+function playSoundTrack(track) {
   if (!track) return;
+
   let source =
     track === "piano"
       ? "Morning Walks  Chiara Arpressio"
@@ -134,43 +143,45 @@ function playTrack(track) {
       ? "Canon in D Pachelbels Canon"
       : "";
 
-  audioPlay.innerHTML = `<audio 
+  audioPlayer.innerHTML = `<audio 
           loop
           autoplay
           controls
           src="./audio/${source}.mp3"
         ></audio>`;
-
-  //   if (track === "piano")
-  //     audioPlay.innerHTML = `<audio
-  //           loop
-  //           autoplay
-  //           controls
-  //           src="./audio/Morning Walks  Chiara Arpressio.mp3"
-  //         ></audio>`;
-  //   else if (track === "baroque")
-  //     audioPlay.innerHTML = `<audio
-  //   loop
-  //   autoplay
-  //   controls
-  //   src="./audio/Canon in D Pachelbels Canon.mp3"
-  // ></audio>`;
-  //   else return;
 }
 
-function endSetSound() {
-  audioPlay.innerHTML = `<audio 
+function playNotificationSound(type) {
+  if (!type) return;
+
+  let soundSource =
+    type === "endSets"
+      ? "simple-notification"
+      : type === "endRest"
+      ? "audio-logo-fa-la-la-185246"
+      : type === "endOneSet"
+      ? "positive-notification-new-level-152480"
+      : "";
+
+  // Descrease volume track before the notification sound
+  audioPlayer.firstChild.volume = 0.4;
+  notificationSound.innerHTML = `<audio 
           autoplay
-          src="./audio/simple-notification.mp3"
+          src="./audio/${soundSource}.mp3"
         ></audio>`;
+
+  notificationSound.firstChild.addEventListener("ended", () => {
+    // Increase volume track after notification
+    audioPlayer.firstChild.volume = 1;
+  });
 }
 
 // Change map image with level up per finished set
 function renderPlantedTree(plantedNum) {
+  image.setAttribute("src", `./img/${plantedNum}.png`);
   if (plantedNum === 16)
     plantedMsg.textContent = `Congratulation! You planted all trees 🌲`;
   else {
-    image.setAttribute("src", `./img/${plantedNum}.png`);
     plantedMsg.textContent = `You planted ${plantedTree} trees 🌲`;
   }
 }
